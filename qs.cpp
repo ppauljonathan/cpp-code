@@ -2,8 +2,6 @@
 #include<time.h>
 using namespace std;
 
-int count=0;
-
 void swap(int &a,int &b){int t;t=a;a=b;b=t;}
 
 int partition(int *a,int lo,int hi)
@@ -14,7 +12,6 @@ int partition(int *a,int lo,int hi)
 
 		if(a[j]>pivot)
 		{
-			count++;
 			swap(a[i],a[j]);
 			i--;
 		}
