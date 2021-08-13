@@ -103,7 +103,7 @@ int main(){
     int n,start;
     cout<<"enter no of vertices : ";cin>>n;
     insertIntoGraph(&G,n);
-    cout<<"enter the vertex to start bfs from : ";cin>>start;
+    cout<<"enter the vertex to start dfs from : ";cin>>start;
     if(start>n){cout<<"\nERR : INVALID VERTEX\n";}
     dfs(G,n,start);
     return 0;
