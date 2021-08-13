@@ -59,26 +59,6 @@ void insGraph(graph **g,int size){
     k->next=t;
 }
 
-void disNode(node *r){
-    node *t=r;
-    while(t!=NULL){
-        cout<<t->a<<" ";
-        t=t->n;
-    }
-}
-
-void disGraph(graph *g){
-    graph *t=g;
-    int i=0;
-    while(t!=NULL){
-        cout<<"node "<<i<<" : ";
-        disNode(t->ver);
-        cout<<'\n';
-        t=t->next;
-        i++;
-    }
-}
-
 void insertIntoGraph(graph **g,int size){
     for(int i=0;i<size;i++){
         cout<<"for vertex "<<i<<'\n';
