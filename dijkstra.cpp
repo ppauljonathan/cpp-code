@@ -1,76 +1,130 @@
 #include<iostream>
-#include<queue>
 using namespace std;
 #define INFINITY 10000
 
-struct edge{
+class edge{
+    public:
     int ever;
     int cost;
     edge *next;
+    bool operator==(const edge &rhs)const{
+        return (ever==rhs.ever)&&
+            (cost==rhs.cost)&&
+            (next==rhs.next);
+    }
 };
 
-struct graph{
+class graph{
+    public:
     edge *ver;
     graph *next;
     int costFromStart;
     string path;
     bool isVisited;
+    bool operator==(const graph &rhs)const{
+        return (ver==rhs.ver)&&
+            (costFromStart==rhs.costFromStart)&&
+            (next==rhs.next);
+    }
 };
 
-struct node{
-    graph *d;
-    node *n,*p;
-};
-
-void ex(node **a,node **b){graph *t;t=(*a)->d;(*a)->d=(*b)->d;(*b)->d=t;}
-
-class pq
-{
+template <typename T>
+class pq{
     private:
-    node *f,*b;
-    int hsize;
+        T t;
+        int p;
+        bool isMin;
+        pq *f,*b,*next,*prev;
+        void nodex(pq **a,pq **b){
+            T t=(*a)->t;
+            int p=(*a)->p;
+
+            (*a)->t=(*b)->t;
+            (*a)->p=(*b)->p;
+
+            (*b)->t=t;
+            (*b)->p=p;
+        }
+        void build(){
+            pq *iter=f->next;
+            while(iter!=NULL){
+                if(isMin){
+                    if(iter->p<f->p){
+                        nodex(&f,&iter);
+                    }
+                }
+                else{
+                    if(iter->p>f->p){
+                        nodex(&f,&iter);
+                    }
+                }
+                iter=iter->next;
+            }
+        }
     public:
-    pq(){f=NULL;b=NULL;}
-    int len(){
-        if(f==NULL||b==NULL){return 0;}
-        int i=0;
-        node *t=f;
-        while(t!=NULL){
-            t=t->n;
-            i++;
+        pq(bool isMin){
+            this->f=NULL;
+            this->b=NULL;
+            this->isMin=isMin;
         }
-        return i;
-    }
-    void build()
-    {
-        if(f==NULL||b==NULL){return;}
-        hsize=len();
-        if(hsize<=1){return;}
-        node *t=f;int min=f->d->costFromStart;
-        while(t!=NULL)
-        {
-            if(t->d->costFromStart<min){ex(&f,&t);break;}
-            t=t->n;
+        int len(){
+            if(f==NULL&&b==NULL){return 0;}
+            if(f==b){return 1;}
+            pq *iter=f;int len=0;
+            while(iter!=b){
+                len++;
+                iter=iter->next;
+            }
         }
-    }
-    void enq(graph *g){
-        node *temp=new node;temp->d=g;
-        if(f==NULL&&b==NULL){f=temp;b=temp;return;}
-        temp->p=b;
-        b->n=temp;
-        b=temp;
-    }
-    bool isEmpty(){
-        if(this->len()==0){return true;}
-        return false;
-    }
-    graph * extop(){
-        node *temp;
-        if(f==NULL){b=NULL;return NULL;}
-        temp=f;
-        f=f->n;
-        return temp->d;
-    }
+        bool isEmpty(){
+            return (this->len()==0)?true:false;
+        }
+        void enq(T t,int p){
+            pq *k=new pq(isMin);
+            k->t=t;
+            k->p=p;
+            k->next=NULL;
+            if(f==NULL){f=k;b=k;return;}
+            b->next=k;
+            k->prev=b;
+            b=b->next;
+            build();
+        }
+        void disp(){
+            pq *iter=f;
+            while(iter!=NULL){
+                cout<<iter->p<<'\n';
+                iter=iter->next;
+            }
+        }
+        T peek(){
+            return (f->t);
+        }
+        void deq(){
+            pq *temp=f;
+            if(f->next==NULL){
+                f=NULL;
+                b=NULL;
+                delete temp;
+                return;
+            }
+            f=f->next;
+            delete temp;
+            build();
+        }
+        void upp(T p,int op,int np){
+            pq *iter=f;
+            while(iter!=NULL){
+                if(
+                    iter->t==p&&
+                    iter->p==op
+                ){
+                    iter->p=np;
+                }
+                iter=iter->next;
+            }
+            build();
+        }
 };
 
 void insEdge(edge **head,int size){
@@ -112,7 +166,7 @@ void inserIntoGraph(graph **G,int size){
 }
 
 void dijkstra(graph *g,int size,int start){
-    pq q;
+    pq <graph *> q(true);
     graph *stitch=g;
     while(stitch->next!=NULL){stitch=stitch->next;}
     stitch->next=g;
@@ -124,24 +178,27 @@ void dijkstra(graph *g,int size,int start){
     iter->path="0";
 
     do{
-        q.build();
-        q.enq(iter);
+        q.enq(iter,iter->costFromStart);
         iter=iter->next;
     }while(iter!=stitch->next);
     
     while(!q.isEmpty()){
-        q.build();
-        top=q.extop();
+        top=q.peek();
+        q.deq();
         top->isVisited=true;
         toptop=top->ver;
         while(toptop!=NULL){
-            // cout<<toptop->ever<<'\n';
             diter=g;
             for(int i=0;i<toptop->ever;i++){diter=diter->next;}
             if(
                 top->costFromStart+toptop->cost<
                 diter->costFromStart
             ){
+                q.upp(
+                    diter,
+                    diter->costFromStart,
+                    top->costFromStart+toptop->cost
+                );
                 diter->costFromStart=top->costFromStart+toptop->cost;
                 diter->path=top->path+"->"+to_string(toptop->ever);
             }
