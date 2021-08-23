@@ -77,7 +77,7 @@ class pq{
             }
         }
         bool isEmpty(){
-            return (this->len()==0)?true:false;
+            return (f==NULL)?true:false;
         }
         void enq(T t,int p){
             pq *k=new pq(isMin);
