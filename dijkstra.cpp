@@ -85,10 +85,30 @@ class pq{
             k->p=p;
             k->next=NULL;
             if(f==NULL){f=k;b=k;return;}
-            b->next=k;
-            k->prev=b;
-            b=b->next;
-            build();
+            if(isMin){
+                if(f->p>k->p){
+                    k->n=f;
+                    f->p=k
+                    f=k;
+                }
+                else{
+                    b->next=k;
+                    k->prev=b;
+                    b=b->next;
+                }
+            }
+            else{
+                if(f->p<k->p){
+                    k->n=f;
+                    f->p=k
+                    f=k;
+                }
+                else{
+                    b->next=k;
+                    k->prev=b;
+                    b=b->next;
+                }
+            }
         }
         void disp(){
             pq *iter=f;
