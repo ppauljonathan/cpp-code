@@ -71,6 +71,6 @@ int main()
      if(wincheck(board))break;
     }
     display(board);
-    cout<<"\r\n\r\nPRESS ANY KEY TO EXIT : ";system("read");
+    cout<<"\r\n\r\nPRESS ANY KEY TO EXIT : ";cin>>p;
     return 0;
 }
