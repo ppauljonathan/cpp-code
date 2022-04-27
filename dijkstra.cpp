@@ -87,8 +87,8 @@ class pq{
             if(f==NULL){f=k;b=k;return;}
             if(isMin){
                 if(f->p>k->p){
-                    k->n=f;
-                    f->p=k
+                    k->next=f;
+                    f->p=k->p;
                     f=k;
                 }
                 else{
@@ -99,8 +99,8 @@ class pq{
             }
             else{
                 if(f->p<k->p){
-                    k->n=f;
-                    f->p=k
+                    k->next=f;
+                    f->p=k->p;
                     f=k;
                 }
                 else{
